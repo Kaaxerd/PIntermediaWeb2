@@ -1,0 +1,29 @@
+@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2U0MjZiOTQ5MTM2ODgwZmNhYmI4MGQiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0MzAwNTM2OSwiZXhwIjoxNzQzMDEyNTY5fQ.JBmunMmW73dABlPT6UUOx0e7SYa7bKDCiKkCss0Pt5c
+
+### Registro de un nuevo usuario
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "juan.perez@email.com",
+  "password": "contraseña-segura"
+}
+
+### Verificación de correo electrónico (El usuario ingresa el código que recibió en su email)
+POST http://localhost:3000/api/auth/verify-email
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "email": "juan.perez@email.com",
+  "verificationCode": "954658"
+}
+
+### Login después de verificación del correo (El usuario tiene que estar verificado)
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+  "email": "juan.perez@email.com",
+  "password": "contraseña-segura"
+}
