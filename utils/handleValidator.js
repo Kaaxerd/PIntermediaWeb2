@@ -6,9 +6,11 @@ const handleValidator = async (req, res, next) => {
         validationResult(req).throw(); // Pasan las validaciones de los datos??
 
         // Existe el correo en la base de datos??
-        const existingUser = await User.findOne({email: req.body.email}); // Buscar el correo en la base de datos
-        if (existingUser) {
-            return res.status(409).send({message: 'El correo ya está registrado'});
+        if (req.path === '/register') {
+            const existingUser = await User.findOne({ email: req.body.email });
+            if (existingUser) {
+                return res.status(409).send({ message: 'El correo ya está registrado' });
+            }
         }
 
         return next(); // Pasa al siguiente middleware

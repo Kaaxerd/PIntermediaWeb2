@@ -9,6 +9,12 @@ const validateRegister = [
     }
 ];
 
-//const validateLogin = [];
+const validateLogin = [
+    check('email').exists().notEmpty().isEmail(),
+    check('password').exists().notEmpty(),
+    (req, res, next) => {
+        handleValidator(req, res, next);
+    }
+];
 
-module.exports = { validateRegister/* , validateLogin */ };
+module.exports = { validateRegister, validateLogin };

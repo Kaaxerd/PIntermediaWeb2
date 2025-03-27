@@ -5,6 +5,8 @@ const {handleHttpError} = require("../utils/handleHttpError")
 const {usersModel} = require("../models")
 const nodemailer = require('nodemailer')
 const crypto = require('crypto')
+const bcrypt = require("bcrypt")
+const {compare} = require("bcrypt")
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -36,7 +38,7 @@ const sendVerificationMail = async (email, verificationCode) => {
  */
 const registerCtrl = async (req, res) => {
     try {
-        req = matchedData(req);
+        /* req = matchedData(req);
         const password = await encrypt(req.password);
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString(); // Código de verificación de 6 números
         const body = {...req, password, verificationCode} // Con "..." duplicamos el objeto y le añadimos o sobreescribimos una propiedad
@@ -53,7 +55,28 @@ const registerCtrl = async (req, res) => {
             verificationCode: dataUser.verificationCode
         }
         
-        res.send(data);
+        res.send(data); */
+
+        // Obtener el cuerpo de la solicitud correctamente
+        const { email, password } = req.body; // Desestructurando el email y la contraseña
+
+        // Asegúrate de que la contraseña y el correo estén definidos
+        if (!email || !password) {
+            return handleHttpError(res, "Missing fields", 400);
+        }
+
+        // Hashear la contraseña antes de almacenarla
+        bcrypt.hash(password, 10, async (err, hash) => {
+            if (err) {
+                return handleHttpError(res, "ERROR_HASHING_PASSWORD", 500);
+            }
+
+            // Crear el nuevo usuario con la contraseña hasheada
+            const newUser = await usersModel.create({ email, password: hash });
+
+            // Responder con el nuevo usuario (sin incluir la contraseña)
+            res.status(201).json({ message: "User created successfully", user: { email: newUser.email, role: newUser.role } });
+        });
     }catch(err) {
         console.log(err);
         handleHttpError(res, "ERROR_REGISTER_USER");
@@ -100,18 +123,26 @@ const verifyEmailCtrl = async (req, res) => {
  */
 const loginCtrl = async (req, res) => {
     try {
-        req = matchedData(req)
-        const user = await usersModel.findOne({ email: req.email }).select("password name role email")
+        /* req = matchedData(req)
+        const user = await usersModel.findOne({ email: req.email }).select("password name role email verified")
 
-        if(!user){
+        if(!user){ // Usuario no encontrado
             handleHttpError(res, "USER_NOT_EXISTS", 404)
             return
         }
+
+        if(!user.verified){ // Usuario no verificado
+            handleHttpError(res, "USER_NOT_VERIFIED", 403)
+            return
+        }
         
+        console.log("Cuerpo de la solicitud:", req.body);
         const hashPassword = user.password;
+        console.log("Contraseña recibida en el login:", req.password);
+        console.log("Contraseña hash en la base de datos:", hashPassword);
         const check = await compare(req.password, hashPassword)
 
-        if(!check){
+        if(!check){ // Contraseña no coincide
             handleHttpError(res, "INVALID_PASSWORD", 401)
             return
         }
@@ -123,9 +154,39 @@ const loginCtrl = async (req, res) => {
             user
         }
 
-        res.send(data)
+        res.send(data) */
 
-    }catch(err){
+        const { email, password } = req.body; // Asegúrate de que obtienes la contraseña
+
+        if (!email || !password) {
+            return handleHttpError(res, "Missing fields", 400);
+        }
+
+        const user = await usersModel.findOne({ email: email });
+
+        if (!user) {
+            return handleHttpError(res, "USER_NOT_EXISTS", 404);
+        }
+
+        // Verifica que la contraseña se pasa correctamente
+        console.log("Contraseña recibida en el login:", password);
+        console.log("Contraseña hash en la base de datos:", user.password);
+
+        // Comparar la contraseña proporcionada con el hash almacenado
+        const check = await compare(password, user.password); // Aquí es donde se compara
+
+        if (!check) {
+            return handleHttpError(res, "INVALID_PASSWORD", 401);
+        }
+
+        // Si las contraseñas coinciden, generar el token
+        const data = {
+            token: await tokenSign(user),
+            user
+        };
+
+        res.send(data);
+    } catch(err) {
         console.log(err)
         handleHttpError(res, "ERROR_LOGIN_USER")
     }

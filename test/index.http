@@ -1,4 +1,4 @@
-@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2U0MjZiOTQ5MTM2ODgwZmNhYmI4MGQiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0MzAwNTM2OSwiZXhwIjoxNzQzMDEyNTY5fQ.JBmunMmW73dABlPT6UUOx0e7SYa7bKDCiKkCss0Pt5c
+@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2U1YzgyNjI3OTM3ZDNkNzMxYjgxYzAiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0MzExMjIzMCwiZXhwIjoxNzQzMTE5NDMwfQ.r_xwCZ_eoq__28AaATL-s71szMMcS1lWimYok9vKSg4
 
 ### Registro de un nuevo usuario
 POST http://localhost:3000/api/auth/register
@@ -16,11 +16,11 @@ Authorization: {{authToken}}
 
 {
   "email": "juan.perez@email.com",
-  "verificationCode": "954658"
+  "verificationCode": "496760"
 }
 
 ### Login después de verificación del correo (El usuario tiene que estar verificado)
-POST http://localhost:3000/login
+POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
