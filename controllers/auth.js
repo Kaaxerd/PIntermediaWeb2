@@ -6,7 +6,6 @@ const {usersModel} = require("../models")
 const nodemailer = require('nodemailer')
 const crypto = require('crypto')
 const bcrypt = require("bcrypt")
-const {compare} = require("bcrypt")
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -38,16 +37,15 @@ const sendVerificationMail = async (email, verificationCode) => {
  */
 const registerCtrl = async (req, res) => {
     try {
-        /* req = matchedData(req);
-        const password = await encrypt(req.password);
+        req = matchedData(req);
+        /* const password = await encrypt(req.password);
+            console.log("Hash generado: ", password); */
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString(); // Código de verificación de 6 números
-        const body = {...req, password, verificationCode} // Con "..." duplicamos el objeto y le añadimos o sobreescribimos una propiedad
-        const dataUser = await usersModel.create(body);
-        //Si no queremos que se devuelva el hash con "findOne", en el modelo de users ponemos select: false en el campo password
-        //Además, en este caso con "create", debemos setear la propiedad tal que:  
+        const body = {...req, verificationCode} // Con "..." duplicamos el objeto y le añadimos o sobreescribimos una propiedad
+        const dataUser = await usersModel.create(body); 
         dataUser.set('password', undefined, { strict: false });
 
-        await sendVerificationMail(dataUser.email, verificationCode);
+        //await sendVerificationMail(dataUser.email, verificationCode);
 
         const data = {
             token: await tokenSign(dataUser),
@@ -55,9 +53,9 @@ const registerCtrl = async (req, res) => {
             verificationCode: dataUser.verificationCode
         }
         
-        res.send(data); */
+        res.send(data);
 
-        // Obtener el cuerpo de la solicitud correctamente
+        /* // Obtener el cuerpo de la solicitud correctamente
         const { email, password } = req.body; // Desestructurando el email y la contraseña
 
         // Asegúrate de que la contraseña y el correo estén definidos
@@ -76,7 +74,7 @@ const registerCtrl = async (req, res) => {
 
             // Responder con el nuevo usuario (sin incluir la contraseña)
             res.status(201).json({ message: "User created successfully", user: { email: newUser.email, role: newUser.role } });
-        });
+        }); */
     }catch(err) {
         console.log(err);
         handleHttpError(res, "ERROR_REGISTER_USER");
@@ -122,8 +120,11 @@ const verifyEmailCtrl = async (req, res) => {
  * @param {*} res 
  */
 const loginCtrl = async (req, res) => {
+    console.log("Intento de login: ", req.body.email);
+
     try {
-        /* req = matchedData(req)
+        req = matchedData(req)
+            console.log("Datos del login después de matchedData: ", req);
         const user = await usersModel.findOne({ email: req.email }).select("password name role email verified")
 
         if(!user){ // Usuario no encontrado
@@ -136,27 +137,25 @@ const loginCtrl = async (req, res) => {
             return
         }
         
-        console.log("Cuerpo de la solicitud:", req.body);
-        const hashPassword = user.password;
-        console.log("Contraseña recibida en el login:", req.password);
-        console.log("Contraseña hash en la base de datos:", hashPassword);
-        const check = await compare(req.password, hashPassword)
+        console.log('Password provided:', req.password);
+        console.log('Stored password hash:', user.password);
 
-        if(!check){ // Contraseña no coincide
-            handleHttpError(res, "INVALID_PASSWORD", 401)
-            return
+        // Comparar la contraseña proporcionada con el hash almacenado
+        const isPasswordCorrect = await compare(req.password, user.password);
+
+        console.log('Password match result:', isPasswordCorrect);  // Verifica si las contraseñas coinciden
+        if (!isPasswordCorrect) {
+            return handleHttpError(res, "INVALID_PASSWORD", 401);  // Si la contraseña no es correcta
         }
 
-        //Si no quisiera devolver el hash del password
-        user.set('password', undefined, {strict: false})
+        user.set('password', undefined, { strict: false });  // No incluir la contraseña en la respuesta
         const data = {
-            token: await tokenSign(user),
-            user
-        }
+            token: await tokenSign(user),  // Generar el token JWT
+            user: user  // Devolver los datos del usuario
+        };
+        res.send(data);
 
-        res.send(data) */
-
-        const { email, password } = req.body; // Asegúrate de que obtienes la contraseña
+        /* const { email, password } = req.body; // Asegúrate de que obtienes la contraseña
 
         if (!email || !password) {
             return handleHttpError(res, "Missing fields", 400);
@@ -185,7 +184,7 @@ const loginCtrl = async (req, res) => {
             user
         };
 
-        res.send(data);
+        res.send(data); */
     } catch(err) {
         console.log(err)
         handleHttpError(res, "ERROR_LOGIN_USER")

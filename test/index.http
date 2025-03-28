@@ -5,8 +5,8 @@ POST http://localhost:3000/api/auth/register
 Content-Type: application/json
 
 {
-  "email": "juan.perez@email.com",
-  "password": "contraseña-segura"
+  "email": "cristiano.ronaldo@email.com",
+  "password": "ay-mi-m4dre-3l-b1ch8888"
 }
 
 ### Verificación de correo electrónico (El usuario ingresa el código que recibió en su email)
@@ -15,8 +15,8 @@ Content-Type: application/json
 Authorization: {{authToken}}
 
 {
-  "email": "juan.perez@email.com",
-  "verificationCode": "496760"
+  "email": "cristiano.ronaldo@email.com",
+  "verificationCode": "980494"
 }
 
 ### Login después de verificación del correo (El usuario tiene que estar verificado)
@@ -24,6 +24,6 @@ POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "juan.perez@email.com",
-  "password": "contraseña-segura"
+  "email": "cristiano.ronaldo@email.com",
+  "password": "ay-mi-m4dre-3l-b1ch8888"
 }
