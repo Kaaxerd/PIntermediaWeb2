@@ -13,6 +13,20 @@ const userSchema = new mongoose.Schema({
         required: true,
         select: false
     },
+    name: {
+        type: String,
+        required: false
+    },
+    lastname: {
+        type: String,
+        required: false
+    },
+    nif: {
+        type: String,
+        required: false,
+        unique: true,
+        length: 9
+    },
     verificationCode: {
         type: String
     },

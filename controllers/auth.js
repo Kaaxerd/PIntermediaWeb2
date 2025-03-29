@@ -1,4 +1,4 @@
-const { matchedData } = require("express-validator")
+const { matchedData, body } = require("express-validator")
 const { tokenSign } = require("../utils/handleJwt")
 const { encrypt, compare } = require("../utils/handlePassword")
 const {handleHttpError} = require("../utils/handleHttpError")
@@ -54,27 +54,6 @@ const registerCtrl = async (req, res) => {
         }
         
         res.send(data);
-
-        /* // Obtener el cuerpo de la solicitud correctamente
-        const { email, password } = req.body; // Desestructurando el email y la contraseña
-
-        // Asegúrate de que la contraseña y el correo estén definidos
-        if (!email || !password) {
-            return handleHttpError(res, "Missing fields", 400);
-        }
-
-        // Hashear la contraseña antes de almacenarla
-        bcrypt.hash(password, 10, async (err, hash) => {
-            if (err) {
-                return handleHttpError(res, "ERROR_HASHING_PASSWORD", 500);
-            }
-
-            // Crear el nuevo usuario con la contraseña hasheada
-            const newUser = await usersModel.create({ email, password: hash });
-
-            // Responder con el nuevo usuario (sin incluir la contraseña)
-            res.status(201).json({ message: "User created successfully", user: { email: newUser.email, role: newUser.role } });
-        }); */
     }catch(err) {
         console.log(err);
         handleHttpError(res, "ERROR_REGISTER_USER");
@@ -153,42 +132,48 @@ const loginCtrl = async (req, res) => {
             token: await tokenSign(user),  // Generar el token JWT
             user: user  // Devolver los datos del usuario
         };
+
         res.send(data);
-
-        /* const { email, password } = req.body; // Asegúrate de que obtienes la contraseña
-
-        if (!email || !password) {
-            return handleHttpError(res, "Missing fields", 400);
-        }
-
-        const user = await usersModel.findOne({ email: email });
-
-        if (!user) {
-            return handleHttpError(res, "USER_NOT_EXISTS", 404);
-        }
-
-        // Verifica que la contraseña se pasa correctamente
-        console.log("Contraseña recibida en el login:", password);
-        console.log("Contraseña hash en la base de datos:", user.password);
-
-        // Comparar la contraseña proporcionada con el hash almacenado
-        const check = await compare(password, user.password); // Aquí es donde se compara
-
-        if (!check) {
-            return handleHttpError(res, "INVALID_PASSWORD", 401);
-        }
-
-        // Si las contraseñas coinciden, generar el token
-        const data = {
-            token: await tokenSign(user),
-            user
-        };
-
-        res.send(data); */
     } catch(err) {
         console.log(err)
         handleHttpError(res, "ERROR_LOGIN_USER")
     }
 }
 
-module.exports = { registerCtrl, loginCtrl, verifyEmailCtrl }
+const getUserCtrl = async (req, res) => {
+    try {
+        const { id } = matchedData(req)
+        const user = await usersModel.findById(id).select("-password -__v")
+
+        if(!user) {
+            handleHttpError(res, "USER_NOT_FOUND", 404)
+            return
+        }
+
+        res.send(user)
+    } catch (err) {
+        console.log(err)
+        handleHttpError(res, "ERROR_GET_USER")
+    }
+}
+
+const updateUserCtrl = async (req, res) => {
+    try {
+        const { id } = req.params; // Obtenemos el id desde los parámetros de la URL
+        const updateData = req.body; // Filtra los datos válidos (esto incluirá el id si se pasa en el body, pero lo usaremos de params)
+        
+        // Actualizamos el usuario (asumiendo que el id en la base de datos es _id)
+        const updatedUser = await usersModel.findByIdAndUpdate(id, updateData, { new: true });
+        
+        if (!updatedUser) {
+            return handleHttpError(res, "USER_NOT_FOUND", 404);
+        }
+        
+        res.send(updatedUser);
+    } catch (err) {
+        console.log(err)
+        handleHttpError(res, "ERROR_UPDATE_USER")
+    }
+}
+
+module.exports = { registerCtrl, loginCtrl, verifyEmailCtrl, getUserCtrl, updateUserCtrl }

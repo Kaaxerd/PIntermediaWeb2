@@ -1,4 +1,4 @@
-@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2U1YzgyNjI3OTM3ZDNkNzMxYjgxYzAiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0MzExMjIzMCwiZXhwIjoxNzQzMTE5NDMwfQ.r_xwCZ_eoq__28AaATL-s71szMMcS1lWimYok9vKSg4
+@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2U3ZDNkOTk1NGU1ZDliZTZiOTYxZjMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0MzI0NjI5OCwiZXhwIjoxNzQzMjUzNDk4fQ.cEYwF0nJ-td9BzjK6lU6U5J2OCHp-2wzV_SnG3vFFGU
 
 ### Registro de un nuevo usuario
 POST http://localhost:3000/api/auth/register
@@ -16,7 +16,7 @@ Authorization: {{authToken}}
 
 {
   "email": "cristiano.ronaldo@email.com",
-  "verificationCode": "980494"
+  "verificationCode": "374825"
 }
 
 ### Login después de verificación del correo (El usuario tiene que estar verificado)
@@ -26,4 +26,17 @@ Content-Type: application/json
 {
   "email": "cristiano.ronaldo@email.com",
   "password": "ay-mi-m4dre-3l-b1ch8888"
+}
+
+### Actualización de datos del usuario
+PUT http://localhost:3000/api/auth/67e7dc5539bdf94faad742b0
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "email": "cr7@gmail.com",
+  "password": "ay-mi-m4dre-3l-b1ch0000",
+  "name": "Cristiano",
+  "lastname": "Ronaldo",
+  "nif": "12345678Z"
 }
