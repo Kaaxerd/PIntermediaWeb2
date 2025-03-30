@@ -218,4 +218,60 @@ const deleteUserCtrl = async (req, res) => {
     }
 }
 
-module.exports = { registerCtrl, loginCtrl, verifyEmailCtrl, getUserCtrl, updateUserCtrl, getUserFromTokenCtrl, deleteUserCtrl }
+const forgotPasswordCtrl = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        const user = await usersModel.findOne({ email }); // Buscar al usuario por email
+        
+        if (!user) {
+            return handleHttpError(res, "USER_NOT_FOUND", 404);
+        }
+        
+        // Generar token de reseteo y expiración
+        const resetToken = Math.floor(100000 + Math.random() * 900000).toString();
+        const resetTokenExpires = Date.now() + 3600000; // 1 hora
+        
+        // Guarda el token y la expiración en el usuario (asegúrate de tener estos campos en tu schema)
+        user.resetPasswordToken = resetToken;
+        user.resetPasswordExpires = resetTokenExpires;
+        await user.save();
+        
+        // En lugar de enviar el email, devolvemos el token en la respuesta
+        res.send({ message: "Token generado para recuperación", resetToken });
+    } catch (err) {
+        console.log(err)
+        handleHttpError(res, "ERROR_FORGOT_PASSWORD")
+    }
+}
+
+const resetPasswordCtrl = async (req, res) => {
+    try {
+        const { token, newPassword } = req.body;
+        
+        // Buscar al usuario con el token y que no haya expirado
+        const user = await usersModel.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpires: { $gt: Date.now() }
+        });
+        if (!user) {
+            return handleHttpError(res, "INVALID_OR_EXPIRED_TOKEN", 400);
+        }
+        
+        // Cifra la nueva contraseña
+        const hashedPassword = await encrypt(newPassword);
+        user.password = hashedPassword;
+        
+        // Limpiar los campos del token
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+        
+        await user.save();
+        res.send({ message: "La contraseña ha sido restablecida correctamente" });
+    } catch (err) {
+        console.log(err);
+        handleHttpError(res, "ERROR_RESET_PASSWORD");
+    }
+};
+
+module.exports = { registerCtrl, loginCtrl, verifyEmailCtrl, getUserCtrl, updateUserCtrl, getUserFromTokenCtrl, deleteUserCtrl, forgotPasswordCtrl, resetPasswordCtrl }

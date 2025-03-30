@@ -1,4 +1,4 @@
-@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2U5NWI1MzQ1ZmU1ZWI0Mjc2YWZhMmIiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0MzM0NjUzOSwiZXhwIjoxNzQzMzUzNzM5fQ.vt30KYcoMltMM9l7MiJ38kpXapDTeRhBaOPEMVmX3mE
+@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2U5NzhkZjFiNmEwOWRkNTRkNzljNTEiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0MzM1NDA3OSwiZXhwIjoxNzQzMzYxMjc5fQ.CWQgYRQGAs_uAVkCvSdt_U9_v6dbuzZs83TsUX4N5YA
 
 ### Registro de un nuevo usuario
 POST http://localhost:3000/api/auth/register
@@ -27,7 +27,7 @@ Authorization: {{authToken}}
 
 {
   "email": "cristiano.ronaldo@email.com",
-  "verificationCode": "308679"
+  "verificationCode": "296402"
 }
 
 ### Login después de verificación del correo (El usuario tiene que estar verificado)
@@ -128,3 +128,22 @@ Authorization: {{authToken}}
 ### Eliminación del usuario (hard delete)
 DELETE http://localhost:3000/api/auth/me?soft=false
 Authorization: {{authToken}}
+
+### Solicitud para generar token de recuperación de contraseña (Forgot Password)
+POST http://localhost:3000/api/auth/forgot-password
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "email": "cristiano.ronaldo@email.com"
+}
+
+### Restablecer la contraseña (Reset Password)
+PATCH http://localhost:3000/api/auth/reset-password
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "token": "852987",
+  "newPassword": "cosecha-popia-de-p4t4c4s"
+}
