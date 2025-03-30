@@ -1,6 +1,7 @@
 const Company = require('../models/nosql/company');
 const usersModel = require('../models/nosql/users');
 const { handleHttpError } = require('../utils/handleHttpError');
+const { uploadToPinata } = require('../utils/pinataService');
 
 const createCompanyCtrl = async (req, res) => {
     try {
@@ -15,13 +16,18 @@ const createCompanyCtrl = async (req, res) => {
 
 const updateCompanyCtrl = async (req, res) => {
     try {
-        // Obtenemos el id de la compañía desde los parámetros de la URL
         const { id } = req.params;
-        // Obtenemos los datos a actualizar del body (ya deberían haber sido validados)
         const updateData = req.body;
-        
-        // Actualizamos el documento usando findByIdAndUpdate,
-        // { new: true } devuelve el documento actualizado y runValidators:true valida los datos.
+
+        // Si se sube un archivo se sube a Pinata
+        if (req.file) {
+            const pinataUrl = await uploadToPinata(req.file);
+            if (!pinataUrl) {
+                return res.status(500).json({ message: 'Error al subir el logo a Pinata' });
+            }
+            updateData.logo = pinataUrl; // Asignamos la URL del logo a updateData
+        }
+
         const updatedCompany = await Company.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
         
         if (!updatedCompany) {

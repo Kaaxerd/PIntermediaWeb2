@@ -27,7 +27,7 @@ Authorization: {{authToken}}
 
 {
   "email": "cristiano.ronaldo@email.com",
-  "verificationCode": "888554"
+  "verificationCode": "242792"
 }
 
 ### Login después de verificación del correo (El usuario tiene que estar verificado)
@@ -92,7 +92,7 @@ Authorization: {{authToken}}
 }
 
 ### Actualización del usuario para asignarle una empresa
-PUT http://localhost:3000/api/auth/67e923b373730de7e3e19949
+PUT http://localhost:3000/api/auth/67e9298ea37a71283dc6957e
 Content-Type: application/json
 Authorization: {{authToken}}
 
@@ -102,5 +102,17 @@ Authorization: {{authToken}}
   "name": "Cristiano",
   "lastname": "Ronaldo",
   "nif": "12345678Z",
-  "company": "67e91fe59b02b7a7e09f5ef1"
+  "company": "67e9299ca37a71283dc69583"
 }
+
+### Actualización del logo de la compañía
+PATCH http://localhost:3000/api/company/67e9299ca37a71283dc69583/logo
+Authorization: {{authToken}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="logo"; filename="cr7.png"
+Content-Type: image/png
+
+< ./cr7.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

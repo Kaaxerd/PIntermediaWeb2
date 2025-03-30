@@ -14,4 +14,18 @@ const validateCompany = [
     }
 ];
 
-module.exports = { validateCompany };
+const validateCompanyUpdate = [
+    // Todos los campos son opcionales en una actualización parcial
+    check('name').optional().isString().withMessage('El nombre debe ser una cadena de texto'),
+    check('cif').optional().isString().withMessage('El CIF debe ser una cadena de texto'),
+    check('street').optional().isString().withMessage('La calle debe ser una cadena de texto'),
+    check('number').optional().isNumeric().withMessage('El número debe ser numérico'),
+    check('postal').optional().isNumeric().withMessage('El código postal debe ser numérico'),
+    check('city').optional().isString().withMessage('La ciudad debe ser una cadena de texto'),
+    check('province').optional().isString().withMessage('La provincia debe ser una cadena de texto'),
+    (req, res, next) => {
+        handleValidator(req, res, next);
+    }
+];
+
+module.exports = { validateCompany, validateCompanyUpdate };
