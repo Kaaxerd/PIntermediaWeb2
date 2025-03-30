@@ -193,6 +193,29 @@ const getUserFromTokenCtrl = async (req, res) => {
         console.log(err)
         handleHttpError(res, "ERROR_GET_USER")
     }
-} 
+}
 
-module.exports = { registerCtrl, loginCtrl, verifyEmailCtrl, getUserCtrl, updateUserCtrl, getUserFromTokenCtrl }
+const deleteUserCtrl = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const soft = req.query.soft;
+
+        let result;
+        if(soft) {
+            result = await usersModel.deleteMany({ _id: userId}); // Eliminación soft
+        } else {
+            result = await usersModel.deleteOne({ _id: userId }); // Eliminación hard
+        }
+
+        if(result.deletedCount === 0) {
+            return handleHttpError(res, "USER_NOT_FOUND", 404);
+        }
+
+        res.send({ message: soft ? "Usuario eliminado (soft delete)" : "Usuario eliminado permanentemente" });
+    } catch (err) {
+        console.log(err)
+        handleHttpError(res, "ERROR_DELETE_USER")
+    }
+}
+
+module.exports = { registerCtrl, loginCtrl, verifyEmailCtrl, getUserCtrl, updateUserCtrl, getUserFromTokenCtrl, deleteUserCtrl }

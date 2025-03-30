@@ -1,4 +1,4 @@
-@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2U5NTRjNDQwMWEwYWY2NmNjM2ZhYTEiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0MzM0NDgzNiwiZXhwIjoxNzQzMzUyMDM2fQ.Yect4NfBZgFr3lJKc2t1LYEA_0_hGlOsmn_XlekMJ-4
+@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2U5NWI1MzQ1ZmU1ZWI0Mjc2YWZhMmIiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0MzM0NjUzOSwiZXhwIjoxNzQzMzUzNzM5fQ.vt30KYcoMltMM9l7MiJ38kpXapDTeRhBaOPEMVmX3mE
 
 ### Registro de un nuevo usuario
 POST http://localhost:3000/api/auth/register
@@ -27,7 +27,7 @@ Authorization: {{authToken}}
 
 {
   "email": "cristiano.ronaldo@email.com",
-  "verificationCode": "287559"
+  "verificationCode": "308679"
 }
 
 ### Login después de verificación del correo (El usuario tiene que estar verificado)
@@ -119,4 +119,12 @@ Content-Type: image/png
 
 ### Obtener datos del usuario a partir del token JWT
 GET http://localhost:3000/api/auth/me
+Authorization: {{authToken}}
+
+### Eliminación del usuario (soft delete por defecto)
+DELETE http://localhost:3000/api/auth/me?soft=true
+Authorization: {{authToken}}
+
+### Eliminación del usuario (hard delete)
+DELETE http://localhost:3000/api/auth/me?soft=false
 Authorization: {{authToken}}
