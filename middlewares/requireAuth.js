@@ -6,7 +6,6 @@ const requireAuth = (req, res, next) => {
         return res.status(401).json({ message: 'No se proporcionó un token' });
     }
 
-    // Se espera que el header tenga el formato "Bearer <token>"
     const token = authHeader.split(' ')[1];
     if (!token) {
         return res.status(401).json({ message: 'Token mal formado' });

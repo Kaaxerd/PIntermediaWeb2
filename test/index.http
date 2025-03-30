@@ -1,4 +1,4 @@
-@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2U5MjNiMzczNzMwZGU3ZTNlMTk5NDkiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0MzMzMjI3NSwiZXhwIjoxNzQzMzM5NDc1fQ.wrXDjoEUmg4dFUSCiw5tgoCKAeaMjrO0oAwmm-JdxzE
+@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2U5NTRjNDQwMWEwYWY2NmNjM2ZhYTEiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0MzM0NDgzNiwiZXhwIjoxNzQzMzUyMDM2fQ.Yect4NfBZgFr3lJKc2t1LYEA_0_hGlOsmn_XlekMJ-4
 
 ### Registro de un nuevo usuario
 POST http://localhost:3000/api/auth/register
@@ -27,7 +27,7 @@ Authorization: {{authToken}}
 
 {
   "email": "cristiano.ronaldo@email.com",
-  "verificationCode": "242792"
+  "verificationCode": "287559"
 }
 
 ### Login después de verificación del correo (El usuario tiene que estar verificado)
@@ -116,3 +116,7 @@ Content-Type: image/png
 
 < ./cr7.png
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Obtener datos del usuario a partir del token JWT
+GET http://localhost:3000/api/auth/me
+Authorization: {{authToken}}

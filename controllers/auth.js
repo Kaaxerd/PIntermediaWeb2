@@ -176,4 +176,23 @@ const updateUserCtrl = async (req, res) => {
     }
 }
 
-module.exports = { registerCtrl, loginCtrl, verifyEmailCtrl, getUserCtrl, updateUserCtrl }
+const getUserFromTokenCtrl = async (req, res) => {
+    console.log("Decoded token payload:", req.user);
+
+    try {
+        const userId = req.user._id;
+        const user = await usersModel.findById(userId).select("-password")
+
+        if(!user) {
+            handleHttpError(res, "USER_NOT_FOUND", 404)
+            return
+        }
+
+        res.send(user)
+    } catch (err) {
+        console.log(err)
+        handleHttpError(res, "ERROR_GET_USER")
+    }
+} 
+
+module.exports = { registerCtrl, loginCtrl, verifyEmailCtrl, getUserCtrl, updateUserCtrl, getUserFromTokenCtrl }
