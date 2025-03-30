@@ -27,6 +27,15 @@ const userSchema = new mongoose.Schema({
         unique: true,
         length: 9
     },
+    company: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Company',
+        required: false
+    },
+    autonomous: {
+        type: Boolean,
+        default: false
+    },
     verificationCode: {
         type: String
     },

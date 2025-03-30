@@ -1,4 +1,4 @@
-@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2U3ZDNkOTk1NGU1ZDliZTZiOTYxZjMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0MzI0NjI5OCwiZXhwIjoxNzQzMjUzNDk4fQ.cEYwF0nJ-td9BzjK6lU6U5J2OCHp-2wzV_SnG3vFFGU
+@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2U5MjNiMzczNzMwZGU3ZTNlMTk5NDkiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0MzMzMjI3NSwiZXhwIjoxNzQzMzM5NDc1fQ.wrXDjoEUmg4dFUSCiw5tgoCKAeaMjrO0oAwmm-JdxzE
 
 ### Registro de un nuevo usuario
 POST http://localhost:3000/api/auth/register
@@ -6,7 +6,18 @@ Content-Type: application/json
 
 {
   "email": "cristiano.ronaldo@email.com",
-  "password": "ay-mi-m4dre-3l-b1ch8888"
+  "password": "ay-mi-m4dre-3l-b1ch8888",
+  "autonomous": false
+}
+
+### Registro de un nuevo usuario autónomo
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "cristiano.ronaldo@email.com",
+  "password": "ay-mi-m4dre-3l-b1ch8888",
+  "autonomous": true
 }
 
 ### Verificación de correo electrónico (El usuario ingresa el código que recibió en su email)
@@ -16,7 +27,7 @@ Authorization: {{authToken}}
 
 {
   "email": "cristiano.ronaldo@email.com",
-  "verificationCode": "374825"
+  "verificationCode": "888554"
 }
 
 ### Login después de verificación del correo (El usuario tiene que estar verificado)
@@ -28,8 +39,17 @@ Content-Type: application/json
   "password": "ay-mi-m4dre-3l-b1ch8888"
 }
 
+###
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "cr7@gmail.com",
+  "password": "ay-mi-m4dre-3l-b1ch0000"
+}
+
 ### Actualización de datos del usuario
-PUT http://localhost:3000/api/auth/67e7dc5539bdf94faad742b0
+PUT http://localhost:3000/api/auth/67e9209a645bb87cb056684a
 Content-Type: application/json
 Authorization: {{authToken}}
 
@@ -39,4 +59,48 @@ Authorization: {{authToken}}
   "name": "Cristiano",
   "lastname": "Ronaldo",
   "nif": "12345678Z"
+}
+
+### Crear una empresa
+POST http://localhost:3000/api/company
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "name": "Servitop, SL.",
+  "cif": "BXXXXXXXX",
+  "street": "Carlos V",
+  "number": 22,
+  "postal": 28936,
+  "city": "Móstoles",
+  "province": "Madrid"
+}
+
+### Actualización de datos de la compañía
+PATCH http://localhost:3000/api/company/67e923d473730de7e3e1994e
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "name": "Servitop Updated, SL.",
+  "cif": "BXXXXXXXX",
+  "street": "Calle Actualizada",
+  "number": 45,
+  "postal": 28002,
+  "city": "Madrid",
+  "province": "Madrid"
+}
+
+### Actualización del usuario para asignarle una empresa
+PUT http://localhost:3000/api/auth/67e923b373730de7e3e19949
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "email": "cr7@gmail.com",
+  "password": "ay-mi-m4dre-3l-b1ch0000",
+  "name": "Cristiano",
+  "lastname": "Ronaldo",
+  "nif": "12345678Z",
+  "company": "67e91fe59b02b7a7e09f5ef1"
 }

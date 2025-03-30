@@ -5,6 +5,7 @@ const dbConnect = require('./config/mongo');
 
 // Rutas
 const authRoutes = require('./routes/auth');
+const companyRoutes = require('./routes/company');
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 //app.use(bodyParser.json());
 
 app.use('/api/auth', authRoutes); // Rutas de autentificación
+app.use('/api/company', companyRoutes); // Rutas de empresa
 
 // Comenzar el server
 app.listen(process.env.PORT, () => {
