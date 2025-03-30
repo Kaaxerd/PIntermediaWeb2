@@ -10,6 +10,7 @@ const companySchema = new mongoose.Schema(
         postal: { type: Number, required: true },
         city: { type: String, required: true },
         province: { type: String, required: true },
+        invitationToken: { type: String, required: true, unique: true }
     },
     { timestamps: true }
 );

@@ -38,10 +38,23 @@ const sendVerificationMail = async (email, verificationCode) => {
 const registerCtrl = async (req, res) => {
     try {
         req = matchedData(req);
-        /* const password = await encrypt(req.password);
-            console.log("Hash generado: ", password); */
+        
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString(); // Código de verificación de 6 números
-        const body = {...req, verificationCode} // Con "..." duplicamos el objeto y le añadimos o sobreescribimos una propiedad
+
+        // Valores por defecto
+        let role = "user";
+        let company = undefined;
+
+        if (req.invitationToken) {
+            const invitedCompany = await Company.findOne({ invitationToken: req.invitationToken });
+            if (!invitedCompany) {
+                return handleHttpError(res, "INVALID_INVITATION_TOKEN", 400);
+            }
+            role = "guest";
+            company = invitedCompany._id;
+        }
+
+        const body = {...req, verificationCode, role, company} // Con "..." duplicamos el objeto y le añadimos o sobreescribimos una propiedad
         const dataUser = await usersModel.create(body); 
         dataUser.set('password', undefined, { strict: false });
 

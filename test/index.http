@@ -1,4 +1,4 @@
-@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2U5NzhkZjFiNmEwOWRkNTRkNzljNTEiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0MzM1NDA3OSwiZXhwIjoxNzQzMzYxMjc5fQ.CWQgYRQGAs_uAVkCvSdt_U9_v6dbuzZs83TsUX4N5YA
+@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2U5ODQ3Y2QwZTAyMTdiMGVkZjRkOWIiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0MzM1NzA2MCwiZXhwIjoxNzQzMzY0MjYwfQ.yrHKrzYnxkIgZkiAaC-RKI-PcS6SwHD-5xhWzqMYhcs
 
 ### Registro de un nuevo usuario
 POST http://localhost:3000/api/auth/register
@@ -26,8 +26,8 @@ Content-Type: application/json
 Authorization: {{authToken}}
 
 {
-  "email": "cristiano.ronaldo@email.com",
-  "verificationCode": "296402"
+  "email": "nuevo.invitado@example.com",
+  "verificationCode": "717398"
 }
 
 ### Login después de verificación del correo (El usuario tiene que estar verificado)
@@ -92,7 +92,7 @@ Authorization: {{authToken}}
 }
 
 ### Actualización del usuario para asignarle una empresa
-PUT http://localhost:3000/api/auth/67e9298ea37a71283dc6957e
+PUT http://localhost:3000/api/auth/67e9847cd0e0217b0edf4d9b
 Content-Type: application/json
 Authorization: {{authToken}}
 
@@ -102,11 +102,11 @@ Authorization: {{authToken}}
   "name": "Cristiano",
   "lastname": "Ronaldo",
   "nif": "12345678Z",
-  "company": "67e9299ca37a71283dc69583"
+  "company": "67e98497d0e0217b0edf4da0"
 }
 
 ### Actualización del logo de la compañía
-PATCH http://localhost:3000/api/company/67e9299ca37a71283dc69583/logo
+PATCH http://localhost:3000/api/company/67e98497d0e0217b0edf4da0/logo
 Authorization: {{authToken}}
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
@@ -146,4 +146,17 @@ Authorization: {{authToken}}
 {
   "token": "852987",
   "newPassword": "cosecha-popia-de-p4t4c4s"
+}
+
+### Registro de usuario con invitación
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "nuevo.invitado@example.com",
+  "password": "unaContraseñaSegura123",
+  "name": "Nuevo",
+  "lastname": "Invitado",
+  "nif": "12345678A",
+  "invitationToken": "7ccade1945873f0dfdec8251f1d449bc"
 }

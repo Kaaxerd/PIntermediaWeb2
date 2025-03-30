@@ -2,11 +2,15 @@ const Company = require('../models/nosql/company');
 const usersModel = require('../models/nosql/users');
 const { handleHttpError } = require('../utils/handleHttpError');
 const { uploadToPinata } = require('../utils/pinataService');
+const { generateInvitationToken } = require('../utils/handleInvitationToken');
 
 const createCompanyCtrl = async (req, res) => {
     try {
         const companyData = req.body;
-        const newCompany = await Company.create(companyData);
+        const invitationToken = generateInvitationToken(); // Genera el token de invitación
+        const companyDataWithToken = { ...companyData, invitationToken }; // Agrega el token al objeto de la compañía
+        
+        const newCompany = await Company.create(companyDataWithToken);
         res.status(201).send(newCompany);
     } catch (err) {
         console.log(err);
